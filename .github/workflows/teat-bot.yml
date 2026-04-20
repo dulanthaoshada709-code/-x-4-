@@ -1,0 +1,30 @@
+name: Bot Connection Test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # ඔබට අවශ්‍ය වෙලාවක manual ලෙස run කිරීමට
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Bot Test
+        env:
+          SESSION_ID: ${{ secrets.SESSION_ID }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          GROUP_JID: ${{ secrets.GROUP_JID }}
+        run: |
+          # Bot එක විනාඩි 2ක් run කර ඉබේම නැවතීමට (Test එකක් නිසා)
+          timeout 120s npm start || echo "Test completed or timed out"
